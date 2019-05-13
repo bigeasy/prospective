@@ -1,0 +1,32 @@
+{
+    "name":                 "prospective",
+    "version":              "9.9.9",
+    "description":
+
+      "A handful of async/await adatapers that I keep having to rewrite.",
+
+    "keywords":
+    [
+                            "async", "await", "events", "callbacks"
+    ],
+    "author":               "Alan Gutierrez <alan@prettyrobots.com>",
+    "homepage":             "https://bigeasy.github.io/prospective",
+    "bugs":                 "https://github.com/bigeasy/prospective/issues",
+    "license":              "MIT",
+    "repository":
+    {
+                            "type": "git",
+                            "url": "bigeasy/prospective"
+    },
+    "dependencies":
+    {
+    },
+    "devDependencies":
+    {
+    },
+    "main":                 "index",
+    "scripts":
+    {
+                            "test": "mocha"
+    }
+}
