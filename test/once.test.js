@@ -9,6 +9,13 @@ describe('once', () => {
         const [ one, two ] = await p
         assert.deepStrictEqual({ one, two }, { one: 1, two: 2 }, 'once')
     })
+    it('can can match any one event', async () => {
+        const ee = new events.EventEmitter
+        const p = once(ee, [ 'event', 'other' ])
+        ee.emit('event', 1, 2)
+        const [ one, two ] = await p
+        assert.deepStrictEqual({ one, two }, { one: 1, two: 2 }, 'once')
+    })
     it('can throw an error', async () => {
         const ee = new events.EventEmitter
         const p = once(ee, 'event')
