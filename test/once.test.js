@@ -36,7 +36,7 @@ describe('once', () => {
     })
     it('can cancel with resolution', async () => {
         const ee = new events.EventEmitter
-        const p = once(ee, 'event', null)
+        const p = once(ee, [ 'skip', 'event' ], null)
         p.resolve('event', 1)
         assert.equal(await p.promise, 1, 'cancel with resolve')
     })
