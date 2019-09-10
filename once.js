@@ -64,3 +64,10 @@ class Once {
 module.exports = function (ee, events, errored) {
     return new Once(ee, Array.isArray(events) ? events : [ events ], errored, Array.isArray(events), arguments.length)
 }
+
+module.exports.NULL = {
+    resolve: (name) => {
+        assert.equal(typeof name, 'string', 'resolve requires an event name')
+    },
+    reject: () => {}
+}

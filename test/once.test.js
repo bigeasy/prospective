@@ -48,4 +48,8 @@ describe('once', () => {
         assert.equal(await p.promise, null, 'cancel with rejection')
         p.reject(new Error('thrown'))
     })
+    it('can provide a NULL once', () => {
+        once.NULL.resolve('event')
+        once.NULL.reject()
+    })
 })
