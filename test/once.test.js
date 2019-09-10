@@ -6,19 +6,19 @@ describe('once', () => {
         const ee = new events.EventEmitter
         const p = once(ee, 'event')
         ee.emit('event', 1, 2)
-        const [ one, two ] = await p
+        const [ one, two ] = await p.promise
         assert.deepStrictEqual({ one, two }, { one: 1, two: 2 }, 'once')
     })
     it('can can match any one event', async () => {
         const ee = new events.EventEmitter
         const p = once(ee, [ 'event', 'other' ])
         ee.emit('event', 1, 2)
-        const [ one, two ] = await p
+        const [ one, two ] = await p.promise
         assert.deepStrictEqual({ one, two }, { one: 1, two: 2 }, 'once')
     })
     it('can throw an error', async () => {
         const ee = new events.EventEmitter
-        const p = once(ee, 'event')
+        const p = once(ee, 'event').promise
         const test = []
         ee.emit('error', new Error('error'))
         try {
@@ -32,6 +32,18 @@ describe('once', () => {
         const ee = new events.EventEmitter
         const p = once(ee, 'event', null)
         ee.emit('error', new Error('error'))
-        await p
+        assert.equal(await p.promise, null, 'caught')
+    })
+    it('can cancel with resolution', async () => {
+        const ee = new events.EventEmitter
+        const p = once(ee, 'event', null)
+        p.resolve('event', 1)
+        assert.equal(await p.promise, 1, 'cancel with resolve')
+    })
+    it('can cancel with rejection', async () => {
+        const ee = new events.EventEmitter
+        const p = once(ee, 'event', null)
+        p.reject(new Error('thrown'))
+        assert.equal(await p.promise, null, 'cancel with rejection')
     })
 })
