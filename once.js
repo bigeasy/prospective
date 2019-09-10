@@ -1,3 +1,5 @@
+const assert = require('assert')
+
 class Once {
     constructor (ee, events, errored, named, argc) {
         this._listeners = []
@@ -38,9 +40,11 @@ class Once {
     }
 
     resolve (name, ...vargs) {
+        assert.equal(typeof name, 'string', 'resolve requires an event name')
         for (const listener of this._listeners) {
             if (listener.name == name) {
                 listener.f.apply(null, vargs)
+                break
             }
         }
     }
