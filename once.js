@@ -2,6 +2,7 @@ const assert = require('assert')
 
 class Once {
     constructor (ee, events, errored, named, argc) {
+        this._resolved = false
         this._listeners = []
         this.promise = new Promise((resolve, reject) => {
             const resolver = name => {
@@ -29,7 +30,8 @@ class Once {
                 }
             }
             const unlisten = () => {
-                this._listeners.forEach(listener => ee.removeListener(listener.name, listener.f))
+                const listeners = this._listeners.splice(0)
+                listeners.forEach(listener => ee.removeListener(listener.name, listener.f))
                 ee.removeListener('error', this._rejector)
             }
             events.forEach(e => ee.on(e, resolver(e)))
@@ -41,16 +43,21 @@ class Once {
 
     resolve (name, ...vargs) {
         assert.equal(typeof name, 'string', 'resolve requires an event name')
-        for (const listener of this._listeners) {
-            if (listener.name == name) {
-                listener.f.apply(null, vargs)
-                break
+        if (this._listeners.length != 0) {
+            for (const listener of this._listeners) {
+                if (listener.name == name) {
+                    listener.f.apply(null, vargs)
+                    break
+                }
             }
+            assert.equal(this._listeners.length, 0, `no listener for ${name}`)
         }
     }
 
     reject (...vargs) {
-        this._rejector.apply(null, vargs)
+        if (this._listeners.length != 0) {
+            this._rejector.apply(null, vargs)
+        }
     }
 }
 

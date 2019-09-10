@@ -39,11 +39,13 @@ describe('once', () => {
         const p = once(ee, [ 'skip', 'event' ], null)
         p.resolve('event', 1)
         assert.equal(await p.promise, 1, 'cancel with resolve')
+        p.resolve('event', 1)
     })
     it('can cancel with rejection', async () => {
         const ee = new events.EventEmitter
         const p = once(ee, 'event', null)
         p.reject(new Error('thrown'))
         assert.equal(await p.promise, null, 'cancel with rejection')
+        p.reject(new Error('thrown'))
     })
 })
