@@ -1,7 +1,6 @@
-describe('latch', () => {
-    const assert = require('assert')
+require('proof')(7, async (okay) => {
     const Latch = require('../latch')
-    it('can invoke on resolve', async () => {
+    {
         let _resolve = null
         const test = []
         const promise = new Promise(resolve => _resolve = resolve)
@@ -9,9 +8,9 @@ describe('latch', () => {
         latch.await((error, result) => test.push({ error, result }))
         _resolve(1)
         await promise
-        assert.deepStrictEqual(test, [{ error: null, result: 1 }], 'invoked')
-    })
-    it('can invoke on reject', async () => {
+        okay(test, [{ error: null, result: 1 }], 'invoke on resolve')
+    }
+    {
         let _reject = null
         const test = []
         const promise = new Promise((resolve, reject) => _reject = reject)
@@ -22,9 +21,9 @@ describe('latch', () => {
             await promise
         } catch (error) {
         }
-        assert.deepStrictEqual(test, [ 'error' ], 'invoked')
-    })
-    it('can await reject', async () => {
+        okay(test, [ 'error' ], 'invoke on reject')
+    }
+    {
         let _reject = null
         const test = []
         const promise = new Promise((resolve, reject) => _reject = reject)
@@ -35,30 +34,23 @@ describe('latch', () => {
             await promise
         } catch (error) {
         }
-        assert.deepStrictEqual(test, [ 'error' ], 'invoked')
-    })
-    it('can invoke a callback immediately after unlatch', () => {
+        okay(test, [ 'error' ], 'await reject')
+    }
+    {
         const test = []
         const latch = new Latch()
         latch.unlatch(null, 1)
         latch.await((error, result) => test.push({ error, result }))
-        assert.deepStrictEqual(test, [{ error: null, result: 1 }], 'invoked')
-    })
-    it('can invoke a callback immediately after unlatch', () => {
-        const test = []
-        const latch = new Latch()
-        latch.unlatch(null, 1)
-        latch.await((error, result) => test.push({ error, result }))
-        assert.deepStrictEqual(test, [{ error: null, result: 1 }], 'invoked')
-    })
-    it('can cancel a callback', () => {
+        okay(test, [{ error: null, result: 1 }], 'invoke unlatched')
+    }
+    {
         const test = []
         const latch = new Latch()
         latch.await((error, result) => test.push({ error, result }))
         const f = latch.await((error, result) => test.push({ error, result }))
-        assert(latch.cancel(f) === f, 'cancel')
-        assert(latch.cancel(f) === null, 'cancel not found')
+        okay(latch.cancel(f) === f, 'cancel')
+        okay(latch.cancel(f) === null, 'cancel not found')
         latch.unlatch(null, 1)
-        assert.deepStrictEqual(test, [{ error: null, result: 1 }], 'invoked')
-    })
+        okay(test, [{ error: null, result: 1 }], 'cancel')
+    }
 })

@@ -1,19 +1,18 @@
-describe('future', () => {
-    const assert = require('assert')
+require('proof')(5, async (okay) => {
     const Future = require('../future')
-    it('can resolve an empty value', async () => {
+    {
         const future = new Future
         future.resolve()
         const result = await future.promise
-        assert(result === undefined, 'void')
-    })
-    it('can resolve value', async () => {
+        okay(result === undefined, 'resolve empty value')
+    }
+    {
         const future = new Future
         future.resolve(1)
         const result = await future.promise
-        assert.equal(result, 1, 'resolve')
-    })
-    it('can reject', async () => {
+        okay(result, 1, 'resolve')
+    }
+    {
         const test = []
         const future = new Future
         future.resolve(new Error('reject'))
@@ -22,15 +21,15 @@ describe('future', () => {
         } catch (error) {
             test.push(error.message)
         }
-        assert.deepStrictEqual(test, [ 'reject' ], 'reject')
-    })
-    it('can resolve error-first callback style', async () => {
+        okay(test, [ 'reject' ], 'reject')
+    }
+    {
         const future = new Future
         future.resolve(null, 1)
         const result = await future.promise
-        assert.equal(result, 1, 'resolve')
-    })
-    it('can reject error-first callback style', async () => {
+        okay(result, 1, 'resolve error-first callback')
+    }
+    {
         const test = []
         const future = new Future
         future.resolve(new Error('reject'), null)
@@ -39,6 +38,6 @@ describe('future', () => {
         } catch (error) {
             test.push(error.message)
         }
-        assert.deepStrictEqual(test, [ 'reject' ], 'reject')
-    })
+        okay(test, [ 'reject' ], 'reject error-first callbackreject')
+    }
 })

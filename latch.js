@@ -36,3 +36,8 @@ class Latch {
 }
 
 module.exports = Latch
+
+module.exports.latch = function () {
+    let stash = null
+    return [ new Promise((resolve, reject) => stash = { resolve, reject }), stash ]
+}

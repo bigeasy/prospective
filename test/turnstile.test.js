@@ -1,14 +1,13 @@
-describe('turnstile', () => {
-    const assert = require('assert')
+require('proof')(2, async (okay) => {
     const Turnstile = require('../turnstile')
-    it('can be constructed', () => {
-        assert(new Turnstile != null, 'constructed')
-    })
-    it('can send waiters through the turnstile', async () => {
+    {
+        okay(new Turnstile != null, 'constructed')
+    }
+    {
         const turnstile = new Turnstile
         const promise = turnstile.enter()
         turnstile.twist(1)
-        assert.equal(await promise, 1, 'through')
+        okay(await promise, 1, 'pass through')
         turnstile.twist(1)
-    })
+    }
 })

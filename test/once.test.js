@@ -1,22 +1,21 @@
-describe('once', () => {
-    const assert = require('assert')
+require('proof')(6, async (okay) => {
     const once = require('../once')
     const events = require('events')
-    it('can return an event', async () => {
+    {
         const ee = new events.EventEmitter
         const p = once(ee, 'event')
         ee.emit('event', 1, 2)
         const [ one, two ] = await p.promise
-        assert.deepStrictEqual({ one, two }, { one: 1, two: 2 }, 'once')
-    })
-    it('can can match any one event', async () => {
+        okay({ one, two }, { one: 1, two: 2 }, 'resolve event')
+    }
+    {
         const ee = new events.EventEmitter
         const p = once(ee, [ 'event', 'other' ])
         ee.emit('event', 1, 2)
         const [ one, two ] = await p.promise
-        assert.deepStrictEqual({ one, two }, { one: 1, two: 2 }, 'once')
-    })
-    it('can throw an error', async () => {
+        okay({ one, two }, { one: 1, two: 2 }, 'set of events')
+    }
+    {
         const ee = new events.EventEmitter
         const p = once(ee, 'event').promise
         const test = []
@@ -26,30 +25,30 @@ describe('once', () => {
         } catch (error) {
             test.push(error.message)
         }
-        assert.deepStrictEqual(test, [ 'error' ], 'once')
-    })
-    it('can catch an error', async () => {
+        okay(test, [ 'error' ], 'reject')
+    }
+    {
         const ee = new events.EventEmitter
         const p = once(ee, 'event', null)
         ee.emit('error', new Error('error'))
-        assert.equal(await p.promise, null, 'caught')
-    })
-    it('can cancel with resolution', async () => {
+        okay(await p.promise, null, 'convert rejection')
+    }
+    {
         const ee = new events.EventEmitter
         const p = once(ee, [ 'skip', 'event' ], null)
         p.resolve('event', 1)
-        assert.equal(await p.promise, 1, 'cancel with resolve')
+        okay(await p.promise, [ 1 ], 'cancel with resolve')
         p.resolve('event', 1)
-    })
-    it('can cancel with rejection', async () => {
+    }
+    {
         const ee = new events.EventEmitter
         const p = once(ee, 'event', null)
         p.reject(new Error('thrown'))
-        assert.equal(await p.promise, null, 'cancel with rejection')
+        okay(await p.promise, null, 'cancel with rejection')
         p.reject(new Error('thrown'))
-    })
-    it('can provide a NULL once', () => {
+    }
+    {
         once.NULL.resolve('event')
         once.NULL.reject()
-    })
+    }
 })
