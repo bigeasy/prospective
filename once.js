@@ -13,8 +13,6 @@ class Once {
                         if (named) {
                             vargs.unshift(name)
                         }
-                        var vargs = []
-                        vargs.push.apply(vargs, arguments)
                         resolve(vargs)
                     }
                 }

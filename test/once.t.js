@@ -12,8 +12,8 @@ require('proof')(6, async (okay) => {
         const ee = new events.EventEmitter
         const p = once(ee, [ 'event', 'other' ])
         ee.emit('event', 1, 2)
-        const [ one, two ] = await p.promise
-        okay({ one, two }, { one: 1, two: 2 }, 'set of events')
+        const [ name, one, two ] = await p.promise
+        okay({ name, one, two }, { name: 'event', one: 1, two: 2 }, 'set of events')
     }
     {
         const ee = new events.EventEmitter
@@ -37,7 +37,7 @@ require('proof')(6, async (okay) => {
         const ee = new events.EventEmitter
         const p = once(ee, [ 'skip', 'event' ], null)
         p.resolve('event', 1)
-        okay(await p.promise, [ 1 ], 'cancel with resolve')
+        okay(await p.promise, [ 'event', 1 ], 'cancel with resolve')
         p.resolve('event', 1)
     }
     {
