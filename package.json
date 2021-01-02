@@ -1,6 +1,6 @@
 {
     "name":                 "prospective",
-    "version":              "0.4.0",
+    "version":              "0.4.1",
     "description":
 
       "A handful of async/await adatapers that I keep having to rewrite.",
